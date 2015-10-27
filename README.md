@@ -2,7 +2,7 @@
 
 My solutions to Project Euler problems.
 
-On a Unix-like system, for example `python problem01.py` prints
+On a Unix-like system, for example, `python problem01.py` prints
 ```
 ** Problem 1 **
 Sum is 233168
