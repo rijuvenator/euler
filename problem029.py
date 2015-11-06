@@ -1,5 +1,5 @@
 # Problem 29: How many distinct terms are formed by a^b, where a,b are integers in [2,100]?
-# Answer: 
+# Answer: 9183
 print '** Problem 29 **'
 
 nums = []

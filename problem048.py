@@ -1,5 +1,5 @@
 # Problem 48: Find the last ten digits of the sum of n^n for n an integer in [1,1000].
-# Answer: 
+# Answer: 9110846700
 print '** Problem 48 **'
 
 Sum = 0

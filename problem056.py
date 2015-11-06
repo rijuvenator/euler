@@ -1,5 +1,5 @@
 # Problem 56: What is the maximum digit sum of numbers of the form a^b, where a,b are integers < 100?
-# Answer: 
+# Answer: 972
 print '** Problem 56 **'
 
 maxsum = 0
