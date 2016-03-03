@@ -1,5 +1,5 @@
 # Problem 55: How many Lychrel numbers are there below 10,000?
-# Answer: 
+# Answer: 249
 print '** Problem 55 **'
 
 def isPalindrome(num):
