@@ -4,4 +4,4 @@ print '** Problem 97 **'
 
 # Looks like python will do it for me
 
-print (28433 * (2**7830457) + 1)%(10**10)
+print "Last ten digits are", (28433 * (2**7830457) + 1)%(10**10)

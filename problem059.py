@@ -24,6 +24,6 @@ for key in enckeys:
 	# No frequency analysis required! I simply looked for ' the ', hoping that it would be present. And it was.
 	if ctcand.find(" the ") > 0:
 		# I ran this once already. It's the Gospel of John, Chapter 1.
-		# print ctcand
+		#print ctcand
 		print 'Sum of the ASCII values is',sum(dec)
 		break

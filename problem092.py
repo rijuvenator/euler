@@ -10,7 +10,9 @@ def endsIn(num):
 	if ends[num] != 0:
 		return ends[num]
 	else:
-		newnum = sum([int(i)*int(i) for i in str(num)])
+		#newnum = sum([int(i)*int(i) for i in str(num)])
+		# This runs 3x faster. I guess string conversion is slow
+		newnum = sum([(num%(10**(i+1))/(10**i))**2 for i in range(len(str(num)))])
 		ends[newnum] = endsIn(newnum)
 		return ends[newnum]
 
