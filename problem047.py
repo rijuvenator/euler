@@ -1,11 +1,12 @@
 # Problem 47: Find the first of the first four consecutive integers to have four distinct prime factors.
-# Answer: 
+# Answer: 134043
 print '** Problem 47 **'
 
-n = 1000000
-primeBools = {}
-for i in range(n):
-	primeBools[i] = True
+n = 1000
+primeBools = [True] * n
+#primeBools = {}
+#for i in range(n):
+#	primeBools[i] = True
 
 primeBools[0] = False
 primeBools[1] = False
@@ -15,21 +16,17 @@ for i in range(n):
 		for j in range(2,n/i + 1 - (n%i == 0)):
 			primeBools[j*i] = False
 
-primes = [i for i in primeBools.keys() if primeBools[i] == True]
+primes = [i for i,x in enumerate(primeBools) if x]
+#primes = [i for i in primeBools.keys() if primeBools[i]]
 
-factors = {}
+#factors = {}
+factors = [None] * 140000
+factors[0] = []
+factors[1] = []
+factors[2] = [2]
+factors[3] = [3]
 
-x = 210
-def PrimeFactors(num):
-	tmpNum = num
-	results = []
-	for prime in [i for i in primes if i < num/2+1]:
-		if tmpNum == 1:
-			return len(set(results))
-		while tmpNum%prime == 0:
-			results.append(prime)
-			tmpNum /= prime
-
+# Unmemoized version
 def NumUniquePrimeFactors(num):
 	count = 0
 	for prime in [i for i in primes if i < num/2+1]:
@@ -39,148 +36,48 @@ def NumUniquePrimeFactors(num):
 			return count
 	return count
 
-def something(num,results,realnum):
-	tmpNum = num
-	if tmpNum == 1:
-		factors[realnum] = set(results)
-		return
-	if tmpNum in factors.keys():
-		factors[realnum] = factors[tmpNum] | set(results)
-		return
-	if tmpNum in primes:
-		factors[tmpNum] = set([tmpNum])
-	for prime in [i for i in primes if i < num/2+1]:
-		if tmpNum%prime == 0 and prime not in results:
-			results.append(prime)
-			something(tmpNum/prime,results,realnum)
+# Fills "factors", also returns the list for a given number
+def FillUnq(num):
+	global factors
+#	if num in factors.keys():
+	if factors[num] is not None:
+		return factors[num]
+	else:
+		if num in primes:
+			factors[num] = [num]
+			return factors[num]
+		thisf = []
+		for prime in [i for i in primes if i < num/2+1][::-1]: # don't need primes > half the number; start from the biggest
+			if num%prime == 0:
+				thisf.append(prime)
+				thisf.extend(FillUnq(num/prime))
+				thisf = list(set(sorted(thisf)))
+				break
+		factors[num] = thisf
+		return factors[num]
 
-x = 2
-while True:
-	something(x,[],x)
-	something(x+1,[],x+1)
-	something(x+2,[],x+2)
-	something(x+3,[],x+3)
-	count = 0
-	for i in range(x,x+4):
-		count += (len(factors[i]) == 4)
-		#if (len(factors[i]) == 4):
-		#	print i,"has 4 factors"
-	if count == 4:
-		break
-	x += 1
+# I cheated the first time; I successively increased this number so I wouldn't waste time, but it didn't run under a minute
+# The problem was not with the algorithm or the memoization, but with the number of primes and the list comprehension.
+# I needed no primes under 1000; setting n to 1000000 led to the slowdown.
+#f = 644
+#done = False
+#while not done:
+#	if len(FillUnq(f))==4:
+#		if len(FillUnq(f+1))==4:
+#			if len(FillUnq(f+2))==4:
+#				if len(FillUnq(f+3))==4:
+#					done = True
+#					print "First integer is", f
+#	f += 1
 
-#while True:
-#	count = 0
-#	count = (NumUniquePrimeFactors(x) == 4) + (NumUniquePrimeFactors(x+1) == 4) + (NumUniquePrimeFactors(x+2) == 4) + (NumUniquePrimeFactors(x+3) == 4)
-#	if NumUniquePrimeFactors(x) == 4:
-#		print x,"has 4 factors"
-#	if count == 4:
-#		break
-#	x += 1
-
-print "First number is",x
-
-
-#numfacts = {}
-#def countFactors(num,startFrom,factors,realnum):
-#	tmpNum = num
-#	if tmpNum not in numfacts.keys():
-#		if realnum == 420:
-#			print tmpNum,realnum
-#		for prime in [i for i in primes if i < realnum/2+1 and i >= startFrom]:
-#			nextPrime = prime
-#			if tmpNum%prime == 0:
-##				print realnum,"is divisible by",prime
-#				factors.append(prime)
-#				#while tmpNum%prime == 0:
-#				tmpNum = tmpNum/prime
-#				if tmpNum%prime != 0:
-#					nextPrime = primes[primes.index(prime)+1]
-#				if tmpNum == 1 or len(set(factors)) > 4:
-#					numfacts[realnum] = set(factors)
-#					if len(set(factors)) == 4:
-#						print "Got down to tmpNum = 1 without else"
-#						print realnum,set(factors)
-#					return len(set(factors))
-#				else:
-#					if realnum == 420:
-#						print "tmpNum is",tmpNum,"about to recurse. Factors are",factors
-#					result = countFactors(tmpNum,nextPrime,factors,realnum)
-#					if result == 4:
-#						print "Got down to 4 via recursion"
-#						print realnum,factors
-#					return result
-#	else:
-#		if realnum == 420:
-#			print "Hit an else with 420"
-#			print tmpNum, factors, numfacts[tmpNum],list(set(factors) | numfacts[tmpNum])
-##		print tmpNum,"has been previously calculated to have",len(numfacts[tmpNum]),"factors"
-##		print set(factors),"are the current factors"
-##		print numfacts[tmpNum],"are the factors to be appended"
-#		factors = list(set(factors[:]) | numfacts[tmpNum])
-#		if realnum == 420:
-#			print realnum, set(factors)
-#		numfacts[realnum] = set(factors)
-#		return len(set(factors))
-#
-#x = 2*3*5*7
-#while True:
-#	count = 0
-#	count = (countFactors(x,2,[],x) == 4) + (countFactors(x+1,2,[],x+1) == 4) + (countFactors(x+2,2,[],x+2) == 4) + (countFactors(x+3,2,[],x+3) == 4)
-#	if count == 4:
-#		break
-#	x += 1
-		
-#def hasFour(num):
-#	count = 0
-#	for prime in primes:
-#		if prime > int(num**(0.5))+1:
-#			return False
-#		if num%prime == 0:
-#		#	print "Number: ",num,", Prime",prime,", Count",count
-#			count += 1
-#			if count == 4:
-#				return True
-#	return False
-#
-#x = 210
-#while True:
-#	if hasFour(x):
-#		if hasFour(x+1):
-#			if hasFour(x+2):
-#				if hasFour(x+3):
-#					break
-#	x += 1
-#
-#print x,"is divisible by"
-#count = 0
-#for prime in primes:
-#	if x%prime == 0:
-#		print prime, count
-#		count += 1
-#		if count == 4:
-#			break
-#print x+1,"is divisible by"
-#count = 0
-#for prime in primes:
-#	if (x+1)%prime == 0:
-#		print prime, count
-#		count += 1
-#		if count == 4:
-#			break
-#print x+2,"is divisible by"
-#count = 0
-#for prime in primes:
-#	if (x+2)%prime == 0:
-#		print prime, count
-#		count += 1
-#		if count == 4:
-#			break
-#print x+3,"is divisible by"
-#count = 0
-#for prime in primes:
-#	if (x+3)%prime == 0:
-#		print prime, count
-#		count += 1
-#		if count == 4:
-#			break
+# Unmemoized version
+f = 644
+done = False
+while not done:
+	if NumUniquePrimeFactors(f)==4:
+		if NumUniquePrimeFactors(f+1)==4:
+			if NumUniquePrimeFactors(f+2)==4:
+				if NumUniquePrimeFactors(f+3)==4:
+					done = True
+					print "First integer is", f
+	f += 1
